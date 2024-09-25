@@ -1,0 +1,35 @@
+name: dio_filex_uploader
+description: |
+  A Flutter package that provides utilities for uploading files using Dio. 
+
+
+version: 0.1.1
+homepage: https://github.com/basnetjiten/dio-file-uploader
+
+environment:
+  sdk: ^3.5.3
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  #functional programmings
+  dartz: ^0.10.1
+
+  #network requests
+  dio: ^5.7.0
+
+  path: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+
+
+# The following section is specific to Flutter packages.
+flutter:
+
+
