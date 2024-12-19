@@ -1,11 +1,8 @@
 import 'dart:io';
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_filex_uploader/extensions/dio_extension.dart';
 import 'extensions/int_extension.dart';
 import 'constants/filex_type_constants.dart';
 import 'filex_utilities/filex_utils.dart';
-import 'typedefs/typedefs.dart';
 
 /// Wrapper to upload file using Dio client
 class DioFileXUploader {
@@ -27,15 +24,15 @@ class DioFileXUploader {
 
   ///Returns either success or failure response based on server status code
 
-  static EitherResponse<String> uploadMultiPartFileFromURL({
-    required Map<String, dynamic> metaData,
+  static Future<bool> uploadMultiPartFileFromURL({
+    required Map<String, dynamic>? metaData,
     required String signedUrl,
     required String filePath,
     String? successMessage,
     String? errorMessage,
   }) async {
     try {
-      final FormData formData = FormData.fromMap(metaData);
+      final FormData formData = FormData.fromMap(metaData ?? {});
 
       final MultipartFile file = await _createMultiPartFile(filePath);
 
@@ -43,15 +40,13 @@ class DioFileXUploader {
 
       final response = await _client.post(signedUrl, data: formData);
 
-      return (response.statusCode ?? 500).isSuccessful
-          ? right(successMessage ?? 'Upload successful')
-          : left(errorMessage ?? 'Error Uploading');
+      return (response.statusCode ?? 500).isSuccessful;
     } on DioException catch (e) {
-      return left(e.handleException(errorMessage: errorMessage));
+      return false;
     }
   }
 
-  static EitherResponse<String> uploadFileBytes({
+  static Future<bool> uploadFileBytes({
     required String signedUrl,
     required File pickedFile,
     String? successMessage,
@@ -69,17 +64,11 @@ class DioFileXUploader {
         data: fileBytes,
         options: Options(headers: {
           'Content-Type': contentType,
-        },
-
-            validateStatus: (status) => status != null && status.isSuccessful),
+        }, validateStatus: (status) => status != null && status.isSuccessful),
       );
-      return (response.statusCode ?? 500).isSuccessful
-          ? right(successMessage ?? 'Upload successful')
-          : left(errorMessage ?? 'Error Uploading');
+      return (response.statusCode ?? 500).isSuccessful;
     } on DioException catch (e) {
-      return left(e.handleException(errorMessage: errorMessage));
+      return false;
     }
   }
 }
-
-

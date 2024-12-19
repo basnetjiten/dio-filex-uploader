@@ -1,3 +1,6 @@
+## 0.1.4
+
+* Feat: Update responseType
 ## 0.1.3
 
 * Fix: Update to take file path instead of File

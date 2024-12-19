@@ -3,7 +3,7 @@ description: |
   A Flutter package that provides utilities for uploading files using Dio. 
 
 
-version: 0.1.3
+version: 0.1.4
 homepage: https://github.com/basnetjiten/dio-filex-uploader
 
 environment:
