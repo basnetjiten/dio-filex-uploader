@@ -15,5 +15,4 @@ To install this package, add the following dependency to your `pubspec.yaml` fil
 
 ```yaml
 dependencies:
-  dio_image_uploader:
-  dio: ^5.0.0
+  dio_filex_uploader: 0.1.2

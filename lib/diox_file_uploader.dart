@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_filex_uploader/extensions/dio_extension.dart';
+import 'extensions/int_extension.dart';
 import 'constants/filex_type_constants.dart';
 import 'filex_utilities/filex_utils.dart';
 import 'typedefs/typedefs.dart';
@@ -29,14 +30,14 @@ class DioFileXUploader {
   static EitherResponse<String> uploadMultiPartFileFromURL({
     required Map<String, dynamic> metaData,
     required String signedUrl,
-    required File pickedFile,
+    required String filePath,
     String? successMessage,
     String? errorMessage,
   }) async {
     try {
       final FormData formData = FormData.fromMap(metaData);
 
-      final MultipartFile file = await _createMultiPartFile(pickedFile.path);
+      final MultipartFile file = await _createMultiPartFile(filePath);
 
       formData.files.add(MapEntry(FileTypeConstants.file, file));
 
@@ -68,7 +69,9 @@ class DioFileXUploader {
         data: fileBytes,
         options: Options(headers: {
           'Content-Type': contentType,
-        }, validateStatus: (status) => status != null && status.isSuccessful),
+        },
+
+            validateStatus: (status) => status != null && status.isSuccessful),
       );
       return (response.statusCode ?? 500).isSuccessful
           ? right(successMessage ?? 'Upload successful')
@@ -79,7 +82,4 @@ class DioFileXUploader {
   }
 }
 
-// Extension for response status check
-extension on int {
-  bool get isSuccessful => this >= 200 && this < 300;
-}
+
