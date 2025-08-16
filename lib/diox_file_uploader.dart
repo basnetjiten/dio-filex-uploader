@@ -30,6 +30,7 @@ class DioFileXUploader {
     required String filePath,
     String? successMessage,
     String? errorMessage,
+    void Function(int sentBytes, int totalBytes)? onProgress,
   }) async {
     try {
       final FormData formData = FormData.fromMap(metaData ?? {});
@@ -38,7 +39,11 @@ class DioFileXUploader {
 
       formData.files.add(MapEntry(FileTypeConstants.file, file));
 
-      final response = await _client.post(signedUrl, data: formData);
+      final response = await _client.post(
+        signedUrl,
+        data: formData,
+        onSendProgress: onProgress,
+      );
 
       return (response.statusCode ?? 500).isSuccessful;
     } on DioException catch (e) {
@@ -51,6 +56,7 @@ class DioFileXUploader {
     required File pickedFile,
     String? successMessage,
     String? errorMessage,
+    void Function(int sentBytes, int totalBytes)? onProgress,
   }) async {
     try {
       // Get the file bytes directly
@@ -59,13 +65,12 @@ class DioFileXUploader {
       final String? fileExtension = FileXUtils.getExtension(pickedFile.path);
       final String contentType = FileXUtils.getContentType(fileExtension);
 
-      final response = await _client.put(
-        signedUrl,
-        data: fileBytes,
-        options: Options(headers: {
-          'Content-Type': contentType,
-        }, validateStatus: (status) => status != null && status.isSuccessful),
-      );
+      final response = await _client.put(signedUrl,
+          data: fileBytes,
+          options: Options(headers: {
+            'Content-Type': contentType,
+          }, validateStatus: (status) => status != null && status.isSuccessful),
+          onSendProgress: onProgress);
       return (response.statusCode ?? 500).isSuccessful;
     } on DioException catch (e) {
       return false;
