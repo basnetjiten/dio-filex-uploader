@@ -24,7 +24,7 @@ class DioFileXUploader {
 
   ///Returns either success or failure response based on server status code
 
-  static Future<Map<String, dynamic>?> uploadMultiPartFileFromURL({
+  static Future<bool> uploadMultiPartFileFromURL({
     required Map<String, dynamic>? metaData,
     required String signedUrl,
     required String filePath,
@@ -45,12 +45,9 @@ class DioFileXUploader {
         onSendProgress: onProgress,
       );
 
-      if ((response.statusCode ?? 500).isSuccessful) {
-        return response.data;
-      }
-      return {};
+      return (response.statusCode ?? 500).isSuccessful;
     } on DioException catch (e) {
-      return null;
+      return false;
     }
   }
 
